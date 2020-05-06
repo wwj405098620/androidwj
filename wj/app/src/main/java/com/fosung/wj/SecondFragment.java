@@ -24,6 +24,8 @@ public class SecondFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        //本地存储读取
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         String string =  sharedPreferences.getString(getString(R.string.fragment1_text) ,"defult");
         tv_content.setText(string);
