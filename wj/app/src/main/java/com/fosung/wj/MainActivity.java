@@ -1,12 +1,11 @@
 package com.fosung.wj;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,12 +13,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.fosung.wj.adapter.MainFragmentsAdapter;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,FirstFragment.OnEditTextViewDoneListener{
     private FirstFragment fragment_1;
     private SecondFragment fragment_2;
     private ThirdFragment fragment_3;
     private TextView tv_hello;
+    private ViewPager paper;
+    private MainFragmentsAdapter adapter;
 
 
     @Override
@@ -42,7 +45,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void initViews(){
-        FragmentManager manager = getFragmentManager();
+
+        // FragmentTransaction required的fragment 与viewpager required的fragment版本冲突 不能同时使用
+        FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         FirstFragment fragment = new FirstFragment();
         fragmentTransaction.add(R.id.layout_fragment_first,fragment);
@@ -55,56 +60,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_first.setOnClickListener(this);
         tv_second.setOnClickListener(this);
         tv_third.setOnClickListener(this);
+
+
+        paper = findViewById(R.id.paper);
+        adapter = new MainFragmentsAdapter(getSupportFragmentManager());
+        paper.setAdapter(adapter);
     }
 
     @Override
     public void onClick(View view) {
-
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        Fragment fragment = null;
         switch (view.getId()){
             case R.id.tv_first:{
-                fragment = getFragment(0);
+                paper.setCurrentItem(0);
             }
             break;
             case R.id.tv_second:{
-                fragment = getFragment(1);
+                paper.setCurrentItem(1);
             }
             break;
             case R.id.tv_third:{
-                fragment = getFragment(2);
+                paper.setCurrentItem(2);
             }
             break;
             default:break;
         }
-        transaction.replace(R.id.layout_fragment_first,fragment);
-        transaction.commit();
     }
 
-    private Fragment getFragment(int position) {
-
-        if (position == 0){
-            if (null == fragment_1){
-                fragment_1 = new FirstFragment();
-            }
-            return fragment_1;
-        }
-        if (position == 1){
-
-            if (null == fragment_2){
-                fragment_2 = new SecondFragment();
-            }
-            return fragment_2;
-        }
-        if (position == 2){
-            if (null == fragment_3){
-                fragment_3 = new ThirdFragment();
-            }
-            return fragment_3;
-        }
-        return null;
-    }
 
 
     public void goMain2(View view){
@@ -130,5 +111,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void OnEditTextViewDone(String text) {
         TextView textView = findViewById(R.id.tv_hello);
         textView.setText(text);
+    }
+
+
+
+    public void goUi(View view) {
     }
 }
